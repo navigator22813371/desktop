@@ -1,0 +1,60 @@
+CREATE DATABASE TimeTracking
+GO
+USE TimeTracking
+GO
+CREATE TABLE Position
+(
+  id INT PRIMARY KEY IDENTITY,
+  position_name NVARCHAR(256),
+);
+GO
+CREATE TABLE Change
+(
+   id INT PRIMARY KEY IDENTITY,
+   сhange_of_employee NVARCHAR(10)
+);
+GO
+CREATE TABLE Employee
+(
+	id INT PRIMARY KEY IDENTITY,
+	fio NVARCHAR(256),
+	position_id INT,
+	phone NVARCHAR(30)
+);
+GO
+CREATE TABLE WorkHours
+(
+	id INT PRIMARY KEY IDENTITY,
+	employee_id INT,
+	position_id INT,
+	change_id INT,
+	number_of_hours INT,
+	date DATETIME
+);
+
+GO
+
+CREATE VIEW M_Y1
+AS 
+SELECT  DATENAME(MONTH, date) As месяц, DATENAME(YEAR,date) as год, number_of_hours,fio,сhange_of_employee AS [Cмена]
+FROM WorkHours
+JOIN Employee
+ON Employee.id = WorkHours.employee_id
+JOIN Change
+ON Change.id = WorkHours.change_id
+
+GO
+
+CREATE VIEW OtchetYear
+AS 
+SELECT * 
+FROM M_Y1
+PIVOT
+(
+SUM(number_of_hours) for месяц IN([ЯНВАРЬ],[ФЕВРАЛЬ],[МАРТ],[АПРЕЛЬ],[МАЙ],[ИЮНЬ],[ИЮЛЬ],[АВГУСТ],[СЕНТЯБРЬ],[ОКТЯБРЬ],[НОЯБРЬ],[ДЕКАБРЬ])
+)as pvt
+
+select * from Change
+select * from Position
+select * from Employee
+select * from WorkHours

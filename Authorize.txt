@@ -1,0 +1,28 @@
+CREATE TABLE Users
+(
+ id INT PRIMARY KEY IDENTITY,
+ [login] varchar(100) NOT NULL,
+ [password] varchar(100) NOT NULL
+);
+GO
+CREATE PROCEDURE Add_User
+@login varchar(MAX),
+@password varchar(MAX)
+AS
+BEGIN
+INSERT INTO Users (login,password) Values (@login,(select HASHBYTES('SHA1',@password)))
+END
+GO
+CREATE FUNCTION CheckUser
+(
+@login varchar(MAX),
+@password varchar(MAX)
+)
+RETURNS BIT
+AS
+BEGIN
+RETURN CAST((SELECT COUNT(*) FROM Users WHERE login = @login AND password = HASHBYTES('SHA1', @password)) AS BIT)
+END
+
+Exec Add_User 'admin','admin'
+select dbo.CheckUser ('admin','admin')

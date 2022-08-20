@@ -1,0 +1,95 @@
+SET DATEFORMAT 'dmy'
+CREATE DATABASE TimeTracking
+GO
+USE TimeTracking
+GO
+CREATE TABLE Position
+(
+  id INT PRIMARY KEY IDENTITY,
+  position_name NVARCHAR(256),
+);
+GO
+CREATE TABLE Change
+(
+   id INT PRIMARY KEY IDENTITY,
+   сhange_of_employee NVARCHAR(10)
+);
+GO
+CREATE TABLE Employee
+(
+	id INT PRIMARY KEY IDENTITY,
+	fio NVARCHAR(256),
+	position_id INT REFERENCES Position(id),
+	phone NVARCHAR(30)
+);
+GO
+CREATE TABLE WorkHours
+(
+	id INT PRIMARY KEY IDENTITY,
+	employee_id INT REFERENCES Employee(id),
+	position_id INT REFERENCES Position(id),
+	change_id INT REFERENCES Change(id),
+	number_of_hours INT,
+	date DATE
+);
+
+GO
+
+CREATE VIEW M_Y1
+AS 
+SELECT  DATENAME(MONTH, date) As месяц, DATENAME(YEAR,date) as год, number_of_hours,fio,сhange_of_employee AS [Cмена]
+FROM WorkHours
+JOIN Employee
+ON Employee.id = WorkHours.employee_id
+JOIN Change
+ON Change.id = WorkHours.change_id
+
+GO
+
+CREATE VIEW OtchetYear
+AS 
+SELECT * 
+FROM M_Y1
+PIVOT
+(
+SUM(number_of_hours) for месяц IN([ЯНВАРЬ],[ФЕВРАЛЬ],[МАРТ],[АПРЕЛЬ],[МАЙ],[ИЮНЬ],[ИЮЛЬ],[АВГУСТ],[СЕНТЯБРЬ],[ОКТЯБРЬ],[НОЯБРЬ],[ДЕКАБРЬ])
+)as pvt
+
+select * from Change
+select * from Position
+select * from Employee
+select * from WorkHours
+
+
+CREATE DATABASE Authorize
+GO
+USE Authorize
+GO
+CREATE TABLE Users
+(
+ id INT PRIMARY KEY IDENTITY,
+ [login] varchar(100) NOT NULL,
+ [password] varchar(100) NOT NULL
+);
+GO
+CREATE PROCEDURE Add_User
+@login varchar(MAX),
+@password varchar(MAX)
+AS
+BEGIN
+INSERT INTO Users (login,password) Values (@login,(select HASHBYTES('SHA1',@password)))
+END
+GO
+CREATE FUNCTION CheckUser
+(
+@login varchar(MAX),
+@password varchar(MAX)
+)
+RETURNS BIT
+AS
+BEGIN
+RETURN CAST((SELECT COUNT(*) FROM Users WHERE login = @login AND password = HASHBYTES('SHA1', @password)) AS BIT)
+END
+
+Exec Add_User 'admin','admin'
+select dbo.CheckUser ('admin','admin')

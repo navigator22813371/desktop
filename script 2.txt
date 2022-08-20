@@ -1,0 +1,106 @@
+CREATE DATABASE TimeTracking
+GO
+USE TimeTracking
+GO
+CREATE TABLE Position
+(
+  id INT PRIMARY KEY IDENTITY,
+  position_name NVARCHAR(256),
+);
+GO
+CREATE TABLE Change
+(
+   id INT PRIMARY KEY IDENTITY,
+   сhange_of_employee NVARCHAR(10)
+);
+CREATE TABLE Employee
+(
+	id INT PRIMARY KEY IDENTITY,
+	fio NVARCHAR(256),
+	position_id INT,
+	phone NVARCHAR(12)
+);
+CREATE TABLE WorkHours
+(
+	id INT PRIMARY KEY IDENTITY,
+	employee_id INT,
+	position_id INT,
+	change_id INT,
+	number_of_hours INT,
+	date DATETIME
+);
+
+INSERT INTO Position 
+VALUES ('Директор');
+
+select * from Position
+
+INSERT INTO Employee 
+VALUES ('Петров Петр Петрович');
+
+date AS [Дата Добавления], fio AS [ФИО], position_name AS [Должность],phone AS [Номер],сhange_of_employee AS [Cмена],number_of_hours AS [Часы]
+
+
+SELECT *
+FROM Position
+JOIN Employee
+ON Employee.position_id = Position.id
+JOIN WorkHours
+ON Employee.id=WorkHours.employee_id 
+JOIN Change
+ON Change.id = WorkHours.change_id
+
+
+select date AS [Дата Добавления], fio AS [ФИО], position_name AS [Должность],phone AS [Номер],сhange_of_employee AS [Cмена],number_of_hours AS [Часы]
+from WorkHours
+JOIN Change
+ON Change.id = WorkHours.change_id
+JOIN Employee
+ON Employee.id = WorkHours.employee_id
+JOIN Position
+ON Position.id = WorkHours.position_id
+
+
+Select * From Change
+Select * From Employee
+
+
+CREATE VIEW M_Y
+AS 
+select date AS [Дата Добавления], fio AS [ФИО], position_name AS [Должность],phone AS [Номер],сhange_of_employee AS [Cмена],number_of_hours AS [Часы]
+from WorkHours
+JOIN Change
+ON Change.id = WorkHours.change_id
+JOIN Employee
+ON Employee.id = WorkHours.employee_id
+JOIN Position
+ON Position.id = WorkHours.position_id
+
+SELECT * 
+FROM M_Y
+PIVOT
+(
+SUM(number_of_hours) for [Часы] IN([ЯНВАРЬ],[ФЕВРАЛЬ],[МАРТ],[АПРЕЛЬ],[МАЙ],[ИЮНЬ],[ИЮЛЬ],[АВГУСТ],[СЕНТЯБРЬ],[ОКТЯБРЬ],[НОЯБРЬ],[ДЕКАБРЬ])
+)as pvt
+
+
+CREATE VIEW M_Y1
+AS 
+SELECT  DATENAME(MONTH, date) As месяц, DATENAME(YEAR,date) as год, number_of_hours,fio,сhange_of_employee AS [Cмена]
+FROM WorkHours
+JOIN Employee
+ON Employee.id = WorkHours.employee_id
+JOIN Change
+ON Change.id = WorkHours.change_id
+
+
+
+CREATE VIEW OtchetYear
+AS 
+SELECT * 
+FROM M_Y1
+PIVOT
+(
+SUM(number_of_hours) for месяц IN([ЯНВАРЬ],[ФЕВРАЛЬ],[МАРТ],[АПРЕЛЬ],[МАЙ],[ИЮНЬ],[ИЮЛЬ],[АВГУСТ],[СЕНТЯБРЬ],[ОКТЯБРЬ],[НОЯБРЬ],[ДЕКАБРЬ])
+)as pvt
+

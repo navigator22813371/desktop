@@ -1,0 +1,41 @@
+﻿<Window x:Class="TrackingTime.AddHourEmpl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrackingTime"
+          xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+        mc:Ignorable="d"
+        Title="AddHourEmpl" Height="441.502" Width="451.34" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" MouseDown="Window_MouseDown">
+    <Grid Margin="40">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="253*"/>
+            <ColumnDefinition Width="247*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.ColumnSpan="2" Margin="0,0,0,0">
+
+            <TextBlock Text="Добавить Часы" FontSize="30" FontWeight="Bold" Margin="0 0 0 20" Height="42"/>
+
+
+            <Grid Margin="200 -180 -80 -20">
+
+                <Button x:Name="ButtonFechar" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Width="25" Height="25" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Purple" Click="ButtonClose_Click_1" Margin="152,93,65,83">
+                    <materialDesign:PackIcon Kind="LocationExit" Width="25" Height="25"/>
+                </Button>
+
+
+            </Grid>
+
+            <ComboBox Name="nam" materialDesign:HintAssist.Hint="Сотрудник" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding}" Margin="0 5"/>
+            <ComboBox Name="positionEmp"  materialDesign:HintAssist.Hint="Должность" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding}" Margin="0 5"/>
+            <ComboBox Name="smena"  materialDesign:HintAssist.Hint="Cмена" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding}" Margin="0 5" />
+            <TextBox Name="hour" materialDesign:HintAssist.Hint="Кол-во часов" Style="{StaticResource MaterialDesignFloatingHintTextBox}"  Margin="0 5" PreviewTextInput="hour_PreviewTextInput" MaxLength="2"/>
+
+            <Button Content="Добавить" Margin="0 20" Click="Add_Click"/>
+
+        </StackPanel>
+
+    </Grid>
+</Window>
